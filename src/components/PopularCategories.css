@@ -1,0 +1,136 @@
+.popular-categories {
+  background-color: #0a0a0a;
+  padding: 3rem 100px;
+  color: #ffffff;
+}
+
+.popular-categories-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.browse-all-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+.browse-all-link:hover {
+  color: #ff6b35;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  column-gap: 2rem;
+}
+
+.category-card {
+  border-top: 1.5px solid #ff6b35;
+  border-bottom: 1.5px solid #ffffff;
+  border-left: none;
+  border-right: none;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(to bottom, #ff6b35, #ffffff);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.category-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(to bottom, #ff6b35, #ffffff);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.category-card > * {
+  position: relative;
+  z-index: 3;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+}
+
+.category-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 150px;
+  padding: 1rem 0;
+}
+
+.category-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 1200px) {
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .popular-categories {
+    padding: 3rem 2rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+

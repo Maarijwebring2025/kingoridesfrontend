@@ -1,0 +1,163 @@
+.download-section {
+  background-color: #0a0a0a;
+  padding: 5rem 100px 0 100px;
+  color: #ffffff;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  margin-top: -100px;
+}
+
+.download-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.download-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.download-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  position: relative;
+  width: 100%;
+}
+
+.download-content {
+  position: relative;
+}
+
+.logo-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #7c3aed;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.download-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.download-subtitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.download-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.download-subtitle-text {
+  font-size: 1rem;
+  color: #ffffff;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.download-button {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  border: none;
+}
+
+.download-button.primary {
+  background-color: #ff6b35;
+  color: #ffffff;
+}
+
+.download-button.primary:hover {
+  background-color: #e55a2b;
+}
+
+.download-button.secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+}
+
+.download-button.secondary:hover {
+  background-color: rgba(255, 107, 53, 0.1);
+}
+
+.download-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 500px;
+}
+
+@media (max-width: 1200px) {
+  .download-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .download-section {
+    padding: 4rem 2rem;
+  }
+
+  .download-title {
+    font-size: 2rem;
+  }
+
+  .download-buttons {
+    flex-direction: column;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+}
+
