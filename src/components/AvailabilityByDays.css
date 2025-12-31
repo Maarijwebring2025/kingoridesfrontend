@@ -175,6 +175,13 @@
   transform: translateX(5px);
 }
 
+.loading-message {
+  color: #ffffff;
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+}
+
 @media (max-width: 768px) {
   .availability-section {
     padding: 3rem 2rem;

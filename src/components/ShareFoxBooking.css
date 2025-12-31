@@ -1,0 +1,207 @@
+.sharefox-book-button {
+  color: #ffffff;
+  background-color: transparent;
+  border: 1.5px solid #ff6b35;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+  width: 100%;
+  justify-content: center;
+}
+
+.sharefox-book-button:hover {
+  background-color: #ff6b35;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.sharefox-book-button:active {
+  transform: translateY(0);
+}
+
+.sharefox-book-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sharefox-book-button .arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.sharefox-book-button:hover .arrow {
+  transform: translateX(5px);
+}
+
+.sharefox-book-button:disabled .arrow {
+  transform: none;
+}
+
+/* Modal Styles */
+.sharefox-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.sharefox-modal {
+  background-color: #1a1a1a;
+  border: 1.5px solid #ff6b35;
+  border-radius: 8px;
+  padding: 2.5rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  color: #ffffff;
+}
+
+.sharefox-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 2rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  line-height: 1;
+}
+
+.sharefox-modal-close:hover {
+  color: #ff6b35;
+}
+
+.sharefox-modal-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sharefox-modal-subtitle {
+  font-size: 1rem;
+  color: #ff6b35;
+  margin: 0 0 2rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sharefox-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input {
+  background-color: #0a0a0a;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ff6b35;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.sharefox-submit-button {
+  background-color: #ff6b35;
+  color: #ffffff;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  font-family: inherit;
+}
+
+.sharefox-submit-button:hover {
+  background-color: #e55a2b;
+  transform: translateY(-2px);
+}
+
+.sharefox-submit-button:active {
+  transform: translateY(0);
+}
+
+.sharefox-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .sharefox-modal {
+    padding: 2rem 1.5rem;
+    width: 95%;
+  }
+
+  .sharefox-modal-title {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
