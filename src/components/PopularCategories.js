@@ -20,7 +20,6 @@ const PopularCategories = () => {
       <div className="popular-categories-container">
         <div className="section-header">
           <h2 className="section-title">POPULAR CATEGORIES</h2>
-          <a href="#browse-all" className="browse-all-link">BROWSE ALL</a>
         </div>
         <div className="categories-grid">
           {categories.map((category) => (

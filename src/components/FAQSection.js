@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './FAQSection.css';
 
 const FAQSection = () => {
-  const [activeIndexes, setActiveIndexes] = useState([0, 1, 2, 3, 4, 5]); // All FAQs open by default
+  const [activeIndexes, setActiveIndexes] = useState([]); // All FAQs closed by default
 
   const faqs = [
     { 

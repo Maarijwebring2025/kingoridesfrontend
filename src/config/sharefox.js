@@ -2,9 +2,10 @@
 // Replace these values with your actual ShareFox credentials
 
 export const SHAREFOX_CONFIG = {
-  // Your ShareFox shop domain (e.g., 'kingorides' for kingorides.mysharefox.com)
+  // Your ShareFox shop domain - must be full domain format (e.g., 'kingorides.mysharefox.com')
   // IMPORTANT: Your shop URL is https://kingorides.mysharefox.com/en
-  shopDomain: process.env.REACT_APP_SHAREFOX_DOMAIN || 'kingorides',
+  // The API requires the full domain format, not just the subdomain
+  shopDomain: process.env.REACT_APP_SHAREFOX_DOMAIN || 'kingorides.mysharefox.com',
   
   // Full booking base URL (optional - override if you have a custom domain)
   // Using mysharefox.com with /en prefix for English language

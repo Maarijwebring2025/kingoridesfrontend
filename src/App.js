@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
@@ -10,10 +11,13 @@ import Benefits from './components/Benefits';
 import FAQSection from './components/FAQSection';
 import DownloadSection from './components/DownloadSection';
 import Footer from './components/Footer';
+import ProductsPage from './components/ProductsPage';
+import ProductDetailPage from './components/ProductDetailPage';
 
-function App() {
+// Home page component
+const HomePage = () => {
   return (
-    <div className="App">
+    <>
       <Header />
       <HeroSection />
       <PopularCategories />
@@ -24,7 +28,21 @@ function App() {
       <FAQSection />
       <DownloadSection />
       <Footer />
-    </div>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/:productId" element={<ProductDetailPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

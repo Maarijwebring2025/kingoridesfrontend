@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HowItWorks.css';
 import findCarIcon from '../assets/find your car.png';
 import orderPayIcon from '../assets/order and pay.png';
@@ -7,6 +8,8 @@ import changeCarIcon from '../assets/change a car.png';
 import rightImage from '../assets/right imagee.png';
 
 const HowItWorks = () => {
+  const navigate = useNavigate();
+  
   const steps = [
     { id: 1, title: 'Find your car', icon: findCarIcon },
     { id: 2, title: 'Order & Pay', icon: orderPayIcon },
@@ -32,7 +35,7 @@ const HowItWorks = () => {
             ))}
           </div>
 
-          <button className="subscribe-button">
+          <button className="subscribe-button" onClick={() => navigate('/products')}>
             Subscribe to a car
             <span className="arrow-icon">→</span>
           </button>

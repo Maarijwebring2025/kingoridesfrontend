@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './DownloadSection.css';
 import downloadImage from '../assets/next rental await left side.png';
 
 const DownloadSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="download-section">
       <div className="download-container">
@@ -19,8 +22,7 @@ const DownloadSection = () => {
             </div>
           </div>
           <div className="download-buttons">
-            <button className="download-button primary">Find your car</button>
-            <button className="download-button secondary">Find your car</button>
+            <button className="download-button primary" onClick={() => navigate('/products')}>Find your car</button>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './SectionNavigation.css';
 
 const SectionNavigation = () => {
@@ -27,7 +28,7 @@ const SectionNavigation = () => {
   return (
     <div className="section-navigation">
       <div className="navigation-container">
-        <a href="#view-all" className="view-all-link">VIEW ALL</a>
+        <Link to="/products" className="view-all-link">VIEW ALL</Link>
         <div className="nav-buttons-container">
           <button className="nav-button nav-button-left" onClick={scrollLeft}>‹</button>
           <button className="nav-button nav-button-right" onClick={scrollRight}>›</button>
