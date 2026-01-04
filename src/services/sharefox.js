@@ -86,21 +86,7 @@ export const setAuthToken = (token) => {
  */
 export const getProducts = async (useAuth = false) => {
   try {
-    // ShareFox API structure might be different - try shop's own API endpoint first
-    // Since the shop URL works (kingorides.mysharefox.com/en/products/...), 
-    // the shop might have its own API endpoint
     const shopBaseUrl = bookingBaseUrl || `https://${shopDomain}`;
-    
-    // Try shop's API endpoint first: https://kingorides.mysharefox.com/api/products
-    // In development, use proxy to avoid CORS issues
-    let url;
-    if (process.env.NODE_ENV === 'development') {
-      // Use proxy for shop API in development to avoid CORS
-      url = `/api/sharefox/products`;
-    } else {
-      url = `${shopBaseUrl}/api/products`;
-    }
-    
     const headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -117,83 +103,145 @@ export const getProducts = async (useAuth = false) => {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
 
-    console.log('Fetching products from shop API:', url);
-    console.log('Headers:', headers);
-    console.log('Shop domain:', shopDomain);
-    console.log('Using auth:', !!authToken);
+    // List of endpoints to try in order
+    const endpointsToTry = [
+      // Shop-specific API endpoints (using shop proxy)
+      {
+        name: 'Shop API /api/products',
+        url: process.env.NODE_ENV === 'development' 
+          ? '/api/sharefox-shop/api/products'
+          : `${shopBaseUrl}/api/products`,
+        useShopProxy: true,
+      },
+      {
+        name: 'Shop API /en/api/products',
+        url: process.env.NODE_ENV === 'development'
+          ? '/api/sharefox-shop/en/api/products'
+          : `${shopBaseUrl}/en/api/products`,
+        useShopProxy: true,
+      },
+      {
+        name: 'Shop API /api/v1/products',
+        url: process.env.NODE_ENV === 'development'
+          ? '/api/sharefox-shop/api/v1/products'
+          : `${shopBaseUrl}/api/v1/products`,
+        useShopProxy: true,
+      },
+      // Main API endpoints (using main proxy)
+      {
+        name: 'Main API /products',
+        url: `${SHAREFOX_API_BASE}/products`,
+        useShopProxy: false,
+      },
+      {
+        name: 'Main API /shops/{domain}/products',
+        url: `${SHAREFOX_API_BASE}/shops/${shopDomain}/products`,
+        useShopProxy: false,
+      },
+    ];
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: headers,
-    });
-
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-
-    if (!response.ok) {
-      // If 404, try alternative endpoints
-      if (response.status === 404) {
-        console.log('Shop API returned 404, trying main API endpoint...');
+    // Try each endpoint
+    for (const endpoint of endpointsToTry) {
+      try {
+        console.log(`Trying ${endpoint.name}:`, endpoint.url);
         
-        // Try 1: Main API endpoint
-        const altUrl1 = `${SHAREFOX_API_BASE}/products`;
-        console.log('Trying main API URL:', altUrl1);
-        
-        const altResponse1 = await fetch(altUrl1, {
+        const response = await fetch(endpoint.url, {
           method: 'GET',
           headers: headers,
         });
-        
-        if (altResponse1.ok) {
-          const altData = await altResponse1.json();
-          console.log('Products data received from main API:', altData);
-          return Array.isArray(altData) ? altData : (altData.products || altData.data || []);
+
+        console.log(`Response status for ${endpoint.name}:`, response.status);
+
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            console.log(`Products data received from ${endpoint.name}:`, data);
+            
+            // Handle different response formats
+            if (Array.isArray(data)) {
+              return data;
+            } else if (data.products && Array.isArray(data.products)) {
+              return data.products;
+            } else if (data.data && Array.isArray(data.data)) {
+              return data.data;
+            } else if (data.items && Array.isArray(data.items)) {
+              return data.items;
+            } else {
+              // If it's an object with product-like structure, wrap it in array
+              console.warn('Unexpected response format, attempting to extract products');
+              return [data];
+            }
+          } else {
+            // If response is not JSON, log and try next endpoint
+            const text = await response.text();
+            console.log(`Non-JSON response from ${endpoint.name}:`, text.substring(0, 200));
+            continue;
+          }
+        } else if (response.status !== 404) {
+          // If it's not a 404, log the error but continue trying
+          const errorText = await response.text();
+          console.warn(`Error ${response.status} from ${endpoint.name}:`, errorText.substring(0, 200));
         }
+      } catch (err) {
+        console.warn(`Error trying ${endpoint.name}:`, err.message);
+        // Continue to next endpoint
+        continue;
+      }
+    }
+
+    // All endpoints failed - try to extract products from shop's products page as last resort
+    console.log('All API endpoints failed, trying to fetch from shop products page...');
+    try {
+      const shopProductsUrl = process.env.NODE_ENV === 'development'
+        ? '/api/sharefox-shop/en/products'
+        : `${shopBaseUrl}/en/products`;
+      
+      const pageResponse = await fetch(shopProductsUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        },
+      });
+
+      if (pageResponse.ok) {
+        const html = await pageResponse.text();
         
-        // Try 2: Main API with shop domain in path
-        if (altResponse1.status === 404) {
-          console.log('Main API also 404, trying shop domain in path...');
-          const altUrl2 = `${SHAREFOX_API_BASE}/shops/${shopDomain}/products`;
-          console.log('Trying alternative URL:', altUrl2);
-          
-          const altResponse2 = await fetch(altUrl2, {
-            method: 'GET',
-            headers: headers,
-          });
-          
-          if (altResponse2.ok) {
-            const altData = await altResponse2.json();
-            console.log('Products data received from shop path endpoint:', altData);
-            return Array.isArray(altData) ? altData : (altData.products || altData.data || []);
+        // Try to find JSON data embedded in the page (common pattern: window.__INITIAL_STATE__ or data-products)
+        const jsonMatches = [
+          html.match(/window\.__INITIAL_STATE__\s*=\s*({[\s\S]*?});/),
+          html.match(/data-products=["']([^"']+)["']/),
+          html.match(/<script[^>]*type=["']application\/json["'][^>]*>([\s\S]*?)<\/script>/gi),
+          html.match(/var\s+products\s*=\s*(\[[\s\S]*?\]);/),
+        ];
+
+        for (const match of jsonMatches) {
+          if (match && match[1]) {
+            try {
+              const data = JSON.parse(match[1]);
+              if (Array.isArray(data)) {
+                console.log('Found products in page HTML:', data.length);
+                return data;
+              } else if (data.products && Array.isArray(data.products)) {
+                console.log('Found products in page HTML:', data.products.length);
+                return data.products;
+              }
+            } catch (e) {
+              // Continue trying other matches
+              continue;
+            }
           }
         }
         
-        // All endpoints failed - the API might not be available
-        throw new Error(`Products API endpoint not found (404). The ShareFox API products endpoint may not be available for your shop, or it might require a different authentication method. Please check the ShareFox API documentation at https://api.mysharefox.com/docs or contact ShareFox support to enable API access for your shop.`);
+        console.log('Could not extract product data from page HTML');
       }
-      
-      const errorText = await response.text();
-      console.error('API Error Response:', errorText);
-      let errorMessage = `Failed to fetch products (${response.status})`;
-      
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch (e) {
-        // If it's HTML (like the error page), provide a helpful message
-        if (errorText.includes('<!DOCTYPE html>')) {
-          errorMessage = `ShareFox API returned an error page. The products endpoint might require authentication or may not be available for your shop. Please check your ShareFox API documentation or contact ShareFox support.`;
-        } else {
-          errorMessage = errorText || errorMessage;
-        }
-      }
-      
-      throw new Error(errorMessage);
+    } catch (htmlError) {
+      console.warn('Failed to fetch products from shop page:', htmlError.message);
     }
 
-    const data = await response.json();
-    console.log('Products data received:', data);
-    return Array.isArray(data) ? data : (data.products || data.data || []);
+    // All methods failed
+    throw new Error(`Unable to fetch products from ShareFox. All API endpoints returned errors. The ShareFox API products endpoint may not be available for your shop. Please contact ShareFox support to enable API access for your shop. You can also check the ShareFox API documentation at https://api.mysharefox.com/docs`);
+    
   } catch (error) {
     console.error('ShareFox get products error:', error);
     console.error('Error details:', {

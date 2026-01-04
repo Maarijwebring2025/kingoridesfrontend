@@ -227,6 +227,11 @@
   width: 100%;
 }
 
+/* Products Grid - 4 columns for Sharefox page */
+.products-grid.four-columns {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 /* ShareFox Products Embed */
 .sharefox-products-embed-wrapper {
   margin-top: 2rem;
@@ -471,6 +476,12 @@
   }
 }
 
+@media (max-width: 1400px) {
+  .products-grid.four-columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 1024px) {
   .products-content-wrapper {
     flex-direction: column;
@@ -486,6 +497,10 @@
   }
   
   .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .products-grid.four-columns {
     grid-template-columns: repeat(2, 1fr);
   }
   
@@ -526,6 +541,10 @@
   .products-grid {
     grid-template-columns: 1fr;
     gap: 1.25rem;
+  }
+
+  .products-grid.four-columns {
+    grid-template-columns: 1fr;
   }
   
   .results-title {

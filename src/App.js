@@ -12,6 +12,7 @@ import FAQSection from './components/FAQSection';
 import DownloadSection from './components/DownloadSection';
 import Footer from './components/Footer';
 import ProductsPage from './components/ProductsPage';
+import ProductsPageSharefox from './components/ProductsPageSharefox';
 import ProductDetailPage from './components/ProductDetailPage';
 
 // Home page component
@@ -39,6 +40,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products-sharefox" element={<ProductsPageSharefox />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
         </Routes>
       </div>
