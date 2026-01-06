@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AvailabilityByDays.css';
 import ShareFoxBooking from './ShareFoxBooking';
 import mercedesImage from '../assets/mercedes x class.png';
-import { initShareFox, getAvailableProducts } from '../services/sharefox';
+import { initShareFox, getAvailableProducts, getProducts } from '../services/sharefox';
 import { SHAREFOX_CONFIG, PRODUCT_IDS } from '../config/sharefox';
 
 const AvailabilityByDays = () => {
@@ -15,15 +15,6 @@ const AvailabilityByDays = () => {
   // Initialize ShareFox
   useEffect(() => {
     initShareFox(SHAREFOX_CONFIG.shopDomain, SHAREFOX_CONFIG.bookingBaseUrl);
-    
-    // Load default cars (fallback if API is not configured)
-    const defaultCars = Array(7).fill(null).map((_, index) => ({
-      id: `mercedes-${index + 1}`,
-      name: 'MERCEDES S-CLASS',
-      image: mercedesImage,
-      sharefoxProductId: PRODUCT_IDS['MERCEDES S-CLASS'] || null,
-    }));
-    setCars(defaultCars);
   }, []);
 
   // Fetch available cars from ShareFox when day selection changes
@@ -32,19 +23,62 @@ const AvailabilityByDays = () => {
       setLoading(true);
       try {
         const dates = calculateDates(selectedDay);
-        // Uncomment when ShareFox API is configured
-        // const availableProducts = await getAvailableProducts(dates.start, dates.end);
-        // setCars(availableProducts);
+        let products = [];
+        
+        // First try to get available products for the date range
+        try {
+          products = await getAvailableProducts(dates.start, dates.end);
+        } catch (availableError) {
+          console.warn('Could not fetch available products, trying all products:', availableError);
+          // If available products fails, try fetching all products
+          try {
+            products = await getProducts();
+            // Limit to first 7 products for display
+            products = products.slice(0, 7);
+          } catch (allProductsError) {
+            console.error('Could not fetch products:', allProductsError);
+            products = [];
+          }
+        }
+        
+        // Map products to car format
+        const mappedCars = products.map((product, index) => ({
+          id: product.id || product.product_id || `product-${index}`,
+          name: product.name || product.title || product.product_name || 'CAR',
+          image: product.image || product.thumbnail || product.photo || mercedesImage,
+          sharefoxProductId: product.id || product.product_id || null,
+          slug: product.slug || product.product_slug || null,
+        }));
+        
+        // If we got products, use them; otherwise use fallback
+        if (mappedCars.length > 0) {
+          setCars(mappedCars);
+        } else {
+          // Fallback to default cars if no products available
+          const defaultCars = Array(7).fill(null).map((_, index) => ({
+            id: `mercedes-${index + 1}`,
+            name: 'MERCEDES S-CLASS',
+            image: mercedesImage,
+            sharefoxProductId: PRODUCT_IDS['MERCEDES S-CLASS'] || null,
+          }));
+          setCars(defaultCars);
+        }
       } catch (error) {
         console.error('Error fetching available cars:', error);
-        // Keep default cars on error
+        // Fallback to default cars on error
+        const defaultCars = Array(7).fill(null).map((_, index) => ({
+          id: `mercedes-${index + 1}`,
+          name: 'MERCEDES S-CLASS',
+          image: mercedesImage,
+          sharefoxProductId: PRODUCT_IDS['MERCEDES S-CLASS'] || null,
+        }));
+        setCars(defaultCars);
       } finally {
         setLoading(false);
       }
     };
 
-    // Uncomment to enable API fetching
-    // fetchAvailableCars();
+    fetchAvailableCars();
   }, [selectedDay]);
 
   const calculateDates = (days) => {

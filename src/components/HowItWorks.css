@@ -31,6 +31,11 @@
   letter-spacing: 1px;
 }
 
+/* Add extra spacing above the HOW IT WORKS title */
+.how-it-works-content .section-title {
+  margin-top: 50px;
+}
+
 .section-description {
   font-size: 1.25rem;
   color: #ffffff;

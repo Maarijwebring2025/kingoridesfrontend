@@ -102,7 +102,7 @@ const EmbeddedBookingForm = ({ product }) => {
       // Redirect to ShareFox checkout after a short delay
       setTimeout(() => {
         const checkoutUrl = `${SHAREFOX_CONFIG.bookingBaseUrl}/checkout`;
-        window.open(checkoutUrl, '_blank');
+        window.location.href = checkoutUrl;
       }, 2000);
     } catch (err) {
       setError(err.message || 'Failed to add to cart. Please try again.');

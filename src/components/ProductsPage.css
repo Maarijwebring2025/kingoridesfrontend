@@ -6,7 +6,7 @@
 
 .products-page-container {
   padding-top: 0;
-  margin-top: 170px;
+  margin-top: 220px;
   min-height: calc(100vh - 200px);
 }
 
@@ -512,7 +512,7 @@
 
 @media (max-width: 768px) {
   .products-page-container {
-    padding-top: 100px;
+    padding-top: 150px;
   }
   
   .products-search-bar {

@@ -25,17 +25,8 @@ const SectionNavigation = () => {
     }
   }, []);
 
-  return (
-    <div className="section-navigation">
-      <div className="navigation-container">
-        <Link to="/products" className="view-all-link">VIEW ALL</Link>
-        <div className="nav-buttons-container">
-          <button className="nav-button nav-button-left" onClick={scrollLeft}>‹</button>
-          <button className="nav-button nav-button-right" onClick={scrollRight}>›</button>
-        </div>
-      </div>
-    </div>
-  );
+  // Controls removed per request
+  return null;
 };
 
 export default SectionNavigation;

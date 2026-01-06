@@ -22,7 +22,7 @@ const DownloadSection = () => {
             </div>
           </div>
           <div className="download-buttons">
-            <button className="download-button primary" onClick={() => navigate('/products')}>Find your car</button>
+            <button className="download-button primary" onClick={() => navigate('/products-sharefox')}>Find your car</button>
           </div>
         </div>
       </div>

@@ -341,6 +341,296 @@ export const getAvailableProducts = async (startDate, endDate) => {
 };
 
 /**
+ * Search products by query
+ * @param {string} query - Search query
+ * @returns {Promise<Array>} - Array of matching products
+ */
+export const searchProducts = async (query) => {
+  try {
+    if (!query || query.trim() === '') {
+      return await getProducts();
+    }
+
+    const shopBaseUrl = bookingBaseUrl || `https://${shopDomain}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    
+    // Add shop domain header
+    if (shopDomain) {
+      headers['x-sharefox-shop-domain'] = shopDomain;
+      headers['x-sharefox-admin-domain'] = shopDomain;
+    }
+    
+    // Add auth token if available
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
+    // List of search endpoints to try
+    const endpointsToTry = [
+      {
+        name: 'Shop API /api/products?search=',
+        url: process.env.NODE_ENV === 'development' 
+          ? `/api/sharefox-shop/api/products?search=${encodeURIComponent(query)}`
+          : `${shopBaseUrl}/api/products?search=${encodeURIComponent(query)}`,
+      },
+      {
+        name: 'Shop API /en/api/products?search=',
+        url: process.env.NODE_ENV === 'development'
+          ? `/api/sharefox-shop/en/api/products?search=${encodeURIComponent(query)}`
+          : `${shopBaseUrl}/en/api/products?search=${encodeURIComponent(query)}`,
+      },
+      {
+        name: 'Main API /products?search=',
+        url: `${SHAREFOX_API_BASE}/products?search=${encodeURIComponent(query)}`,
+      },
+    ];
+
+    // Try each endpoint
+    for (const endpoint of endpointsToTry) {
+      try {
+        const response = await fetch(endpoint.url, {
+          method: 'GET',
+          headers: headers,
+        });
+
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            
+            // Handle different response formats
+            if (Array.isArray(data)) {
+              return data;
+            } else if (data.products && Array.isArray(data.products)) {
+              return data.products;
+            } else if (data.data && Array.isArray(data.data)) {
+              return data.data;
+            } else if (data.items && Array.isArray(data.items)) {
+              return data.items;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`Error trying ${endpoint.name}:`, err.message);
+        continue;
+      }
+    }
+
+    // If search endpoint doesn't work, fetch all products and filter client-side
+    console.log('Search endpoint not available, filtering products client-side...');
+    const allProducts = await getProducts();
+    console.log(`Total products fetched: ${allProducts.length}`);
+    
+    // Normalize search query - trim, lowercase, and remove duplicate words
+    const searchLower = query.trim().toLowerCase();
+    // Remove duplicate words from search query (e.g., "tesla tesla" becomes "tesla")
+    const uniqueWords = [...new Set(searchLower.split(/\s+/).filter(word => word.length > 0))];
+    const searchWords = uniqueWords;
+    const normalizedQuery = uniqueWords.join(' ');
+    console.log(`Search query: "${query}" -> normalized: "${normalizedQuery}", Search words:`, searchWords);
+    
+    // Filter products by search query (case-insensitive, multi-word matching)
+    const filteredProducts = allProducts.filter(product => {
+      // Extract all possible searchable text fields from product (check multiple field name variations)
+      const name = (product.name || product.title || product.product_name || product.label || product.display_name || '').toLowerCase();
+      const brand = (product.brand || product.manufacturer || product.make || product.company || '').toLowerCase();
+      const description = (product.description || product.details || product.desc || product.summary || product.info || '').toLowerCase();
+      const category = (product.category || product.type || product.vehicle_type || product.category_name || product.vehicleCategory || '').toLowerCase();
+      const model = (product.model || product.model_name || product.modelName || '').toLowerCase();
+      const year = (product.year || product.year_model || product.yearModel || '').toString().toLowerCase();
+      const slug = (product.slug || product.product_slug || product.url_slug || '').toLowerCase();
+      
+      // Also check nested fields that might contain the search term
+      const variantName = (product.variant?.name || product.variant?.title || '').toLowerCase();
+      const variantModel = (product.variant?.model || '').toLowerCase();
+      
+      // Combine all searchable fields into one searchable text string
+      const searchableText = `${name} ${brand} ${description} ${category} ${model} ${year} ${slug} ${variantName} ${variantModel}`.toLowerCase();
+      
+      // Check if all search words are found in the searchable text
+      // This allows for multi-word searches like "mercedes sedan" to match products
+      const allWordsMatch = searchWords.every(word => searchableText.includes(word));
+      
+      // Also check for exact phrase match (use normalized query)
+      const exactMatch = searchableText.includes(normalizedQuery) || searchableText.includes(searchLower);
+      
+      // Check individual word matches in key fields
+      const individualWordMatch = searchWords.some(word => 
+        name.includes(word) || 
+        brand.includes(word) || 
+        model.includes(word) ||
+        category.includes(word) ||
+        slug.includes(word) ||
+        variantName.includes(word) ||
+        variantModel.includes(word)
+      );
+      
+      // If still no match, do a comprehensive check by converting entire product to string
+      // This catches any field we might have missed
+      let comprehensiveMatch = false;
+      if (!allWordsMatch && !exactMatch && !individualWordMatch) {
+        try {
+          const productString = JSON.stringify(product).toLowerCase();
+          // Check both normalized query and original search term
+          comprehensiveMatch = productString.includes(normalizedQuery) || productString.includes(searchLower);
+        } catch (e) {
+          // If JSON.stringify fails, skip comprehensive check
+        }
+      }
+      
+      // Return true if any match condition is met
+      const matches = allWordsMatch || exactMatch || individualWordMatch || comprehensiveMatch;
+      
+      // Debug logging for tesla searches
+      if (searchLower.includes('tesla') && matches) {
+        console.log('Tesla product matched:', {
+          id: product.id || product.product_id,
+          name: product.name || product.title,
+          brand: product.brand,
+          searchableText: searchableText.substring(0, 200),
+          matchType: allWordsMatch ? 'allWords' : exactMatch ? 'exact' : individualWordMatch ? 'individual' : 'comprehensive'
+        });
+      }
+      
+      return matches;
+    });
+    
+    console.log(`Filtered products: ${filteredProducts.length} out of ${allProducts.length}`);
+    return filteredProducts;
+  } catch (error) {
+    console.error('ShareFox search products error:', error);
+    // Return empty array on error
+    return [];
+  }
+};
+
+/**
+ * Get categories from ShareFox
+ * Tries to fetch from categories endpoint, or extracts unique categories from products
+ * @returns {Promise<Array>} - Array of categories
+ */
+export const getCategories = async () => {
+  try {
+    const shopBaseUrl = bookingBaseUrl || `https://${shopDomain}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    
+    // Add shop domain header
+    if (shopDomain) {
+      headers['x-sharefox-shop-domain'] = shopDomain;
+      headers['x-sharefox-admin-domain'] = shopDomain;
+    }
+    
+    // Add auth token if available
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
+    // List of category endpoints to try
+    const endpointsToTry = [
+      {
+        name: 'Shop API /api/categories',
+        url: process.env.NODE_ENV === 'development' 
+          ? '/api/sharefox-shop/api/categories'
+          : `${shopBaseUrl}/api/categories`,
+      },
+      {
+        name: 'Shop API /en/api/categories',
+        url: process.env.NODE_ENV === 'development'
+          ? '/api/sharefox-shop/en/api/categories'
+          : `${shopBaseUrl}/en/api/categories`,
+      },
+      {
+        name: 'Main API /categories',
+        url: `${SHAREFOX_API_BASE}/categories`,
+      },
+      {
+        name: 'Main API /shops/{domain}/categories',
+        url: `${SHAREFOX_API_BASE}/shops/${shopDomain}/categories`,
+      },
+    ];
+
+    // Try each endpoint
+    for (const endpoint of endpointsToTry) {
+      try {
+        console.log(`Trying ${endpoint.name}:`, endpoint.url);
+        
+        const response = await fetch(endpoint.url, {
+          method: 'GET',
+          headers: headers,
+        });
+
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            console.log(`Categories data received from ${endpoint.name}:`, data);
+            
+            // Handle different response formats
+            if (Array.isArray(data)) {
+              return data;
+            } else if (data.categories && Array.isArray(data.categories)) {
+              return data.categories;
+            } else if (data.data && Array.isArray(data.data)) {
+              return data.data;
+            } else if (data.items && Array.isArray(data.items)) {
+              return data.items;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`Error trying ${endpoint.name}:`, err.message);
+        continue;
+      }
+    }
+
+    // If categories endpoint doesn't work, extract categories from products
+    console.log('Categories endpoint not available, extracting from products...');
+    const products = await getProducts();
+    
+    // Extract unique categories from products
+    const categoryMap = new Map();
+    
+    products.forEach(product => {
+      // Try different possible category fields
+      const categoryName = product.category || product.type || product.vehicle_type || product.category_name;
+      const categoryId = product.category_id || product.type_id;
+      const categoryImage = product.category_image || product.image || product.thumbnail;
+      
+      if (categoryName) {
+        const key = categoryId || categoryName.toLowerCase();
+        if (!categoryMap.has(key)) {
+          categoryMap.set(key, {
+            id: categoryId || key,
+            name: categoryName.toUpperCase(),
+            image: categoryImage || null,
+          });
+        }
+      }
+    });
+    
+    const categories = Array.from(categoryMap.values());
+    
+    // If no categories found, return empty array
+    if (categories.length === 0) {
+      console.warn('No categories found in products');
+      return [];
+    }
+    
+    return categories;
+  } catch (error) {
+    console.error('ShareFox get categories error:', error);
+    // Return empty array on error instead of throwing
+    return [];
+  }
+};
+
+/**
  * Login as shop user (customer) to create orders
  * @param {string} email - Customer email
  * @param {string} password - Customer password
@@ -507,8 +797,8 @@ export const openShareFoxBooking = (options) => {
   // Get booking URL with proper format: /en/products/{productId}/{product-slug}
   const bookingUrl = getBookingUrl(productId, startDate, endDate, productSlug, productName, slugMap);
   
-  // Open in new window or redirect
-  window.open(bookingUrl, '_blank', 'width=800,height=600');
+  // Open in same tab
+  window.location.href = bookingUrl;
 };
 
 /**
@@ -586,6 +876,8 @@ export default {
   getProducts,
   getProductById,
   getAvailableProducts,
+  searchProducts,
+  getCategories,
   loginShopUser,
   registerShopUser,
   addToCart,

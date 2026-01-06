@@ -35,7 +35,7 @@ const HowItWorks = () => {
             ))}
           </div>
 
-          <button className="subscribe-button" onClick={() => navigate('/products')}>
+          <button className="subscribe-button" onClick={() => navigate('/products-sharefox')}>
             Subscribe to a car
             <span className="arrow-icon">→</span>
           </button>
