@@ -284,9 +284,8 @@ const ProductsPage = () => {
   };
 
   const handleProductClick = (product) => {
-    // Use sharefoxId if available, otherwise use product id
-    const productId = product.sharefoxId || product.id;
-    navigate(`/products/${productId}`);
+    const productId = product.id;
+    navigate(`/products/custom/${productId}`, { state: { product } });
   };
 
   const formatPrice = (price) => {

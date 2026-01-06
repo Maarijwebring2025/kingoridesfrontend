@@ -17,6 +17,7 @@ import LandingProductsSharefox from './components/LandingProductsSharefox';
 import SearchPage from './components/SearchPage';
 import PackagesPage from './components/PackagesPage';
 import ContactUsPage from './components/ContactUsPage';
+import CustomProductDetailPage from './components/CustomProductDetailPage';
 
 // One-time auto-refresh per route to ensure live embeds/data fetch correctly
 const RouteRefresher = () => {
@@ -64,6 +65,7 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products-sharefox" element={<ProductsPageSharefox />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
+          <Route path="/products/custom/:productId" element={<CustomProductDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/packages" element={<PackagesPage />} />
           <Route path="/contact" element={<ContactUsPage />} />
