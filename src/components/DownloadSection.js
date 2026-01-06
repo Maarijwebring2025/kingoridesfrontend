@@ -22,7 +22,12 @@ const DownloadSection = () => {
             </div>
           </div>
           <div className="download-buttons">
-            <button className="download-button primary" onClick={() => navigate('/products-sharefox')}>Find your car</button>
+            <button
+              className="download-button primary"
+              onClick={() => { window.location.href = '/products-sharefox'; }}
+            >
+              Find your car
+            </button>
           </div>
         </div>
       </div>

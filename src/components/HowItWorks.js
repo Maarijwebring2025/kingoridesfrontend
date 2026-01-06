@@ -35,7 +35,10 @@ const HowItWorks = () => {
             ))}
           </div>
 
-          <button className="subscribe-button" onClick={() => navigate('/products-sharefox')}>
+          <button
+            className="subscribe-button"
+            onClick={() => { window.location.href = '/products-sharefox'; }}
+          >
             Subscribe to a car
             <span className="arrow-icon">→</span>
           </button>
