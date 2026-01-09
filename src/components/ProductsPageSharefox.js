@@ -192,7 +192,7 @@ const ProductsPageSharefox = () => {
             <h2 className="results-title">
               {searchTerm 
                 ? `Showing results for '${searchTerm}'`
-                : 'All Products (Live from Sharefox)'
+                : 'Products Page'
               }
             </h2>
             
