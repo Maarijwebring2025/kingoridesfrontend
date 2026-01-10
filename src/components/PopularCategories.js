@@ -40,6 +40,12 @@ const PopularCategories = () => {
       <div className="popular-categories-container">
         <div className="section-header">
           <h2 className="section-title">POPULAR CATEGORIES</h2>
+          <button 
+            className="book-now-categories-button"
+            onClick={() => { window.location.href = 'https://kingorides.mysharefox.com/en/products'; }}
+          >
+            Book Now
+          </button>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255, 255, 255, 0.6)' }}>
@@ -52,11 +58,11 @@ const PopularCategories = () => {
                 No categories available.
               </div>
             ) : (
-              <div className="categories-grid">
-                {categories.map((category) => (
-                  <div key={category.id} className="category-card">
+        <div className="categories-grid">
+          {categories.map((category) => (
+            <div key={category.id} className="category-card">
                     {category.image ? (
-                      <img src={category.image} alt={category.name} className="category-image" />
+              <img src={category.image} alt={category.name} className="category-image" />
                     ) : (
                       <div className="category-image" style={{
                         display: 'flex',
@@ -67,10 +73,10 @@ const PopularCategories = () => {
                         {category.name?.[0] || '?'}
                       </div>
                     )}
-                    <div className="category-name">{category.name}</div>
-                  </div>
-                ))}
-              </div>
+              <div className="category-name">{category.name}</div>
+            </div>
+          ))}
+        </div>
             )}
           </>
         )}

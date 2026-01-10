@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SHAREFOX_CONFIG } from '../config/sharefox';
+import './LandingProductsSharefox.css';
 
 const LandingProductsSharefox = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
@@ -67,6 +68,12 @@ const LandingProductsSharefox = () => {
       <div className="products-page-container" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1rem' }}>
         <div className="section-header">
           <h2 className="section-title">POPULAR PRODUCTS</h2>
+          <button 
+            className="book-now-button"
+            onClick={() => { window.location.href = 'https://kingorides.mysharefox.com/en/products'; }}
+          >
+            Book Now
+          </button>
         </div>
         <div
           className="sharefox-embed"

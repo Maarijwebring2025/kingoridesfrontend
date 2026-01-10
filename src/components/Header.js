@@ -201,7 +201,7 @@ const Header = ({ searchTerm, setSearchTerm, rentalDays, setRentalDays, onSearch
             ) : (
               <>
                 <button className="my-account-btn" onClick={() => { setShowLogin(true); setLoginSubmitted(false); }}>My account</button>
-                <button className="create-account-btn" onClick={() => { setShowSignup(true); setSignupSubmitted(false); }}>Create an account</button>
+                <button className="create-account-btn" onClick={() => { window.location.href = 'https://kingorides.mysharefox.com/en/products'; }}>Book Now</button>
               </>
             )}
           </div>
