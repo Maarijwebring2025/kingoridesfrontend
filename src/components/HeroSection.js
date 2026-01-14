@@ -17,7 +17,7 @@ const HeroSection = () => {
             <span className="hero-title-line2">RENTAL CARS.</span>
           </div>
           <div className="hero-description">
-            Lorem ipsum amet consectetur: Sit sed viverra ut ha is sed.
+            Experience premium car rental services with flexible subscription plans. Choose from our wide selection of vehicles and enjoy hassle-free rentals with full insurance coverage and 24/7 support.
           </div>
         </div>
       </div>

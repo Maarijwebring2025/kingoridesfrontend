@@ -23,7 +23,7 @@ const HowItWorks = () => {
         <div className="how-it-works-content">
           <h2 className="section-title">HOW IT WORKS?</h2>
           <p className="section-description">
-            Lorem ipsum dolor sit amet consectetur. Sit sed viverra ut habitasse quis sed.
+            Renting a car with Kingo Rides is simple and straightforward. Follow these easy steps to get behind the wheel of your perfect vehicle.
           </p>
           
           <div className="steps-list">

@@ -12,9 +12,9 @@ const Footer = () => {
             <ul className="footer-links">
               <li><a href="#find-car">Find your Car</a></li>
               <li><a href="#list-car">List your car</a></li>
-              <li><a href="#lorem1">Lorem ipsum</a></li>
-              <li><a href="#lorem2">Lorem ipsum</a></li>
-              <li><a href="#lorem3">Lorem ipsum</a></li>
+              <li><a href="/packages">Rental Packages</a></li>
+              <li><a href="/products-sharefox">Browse Cars</a></li>
+              <li><a href="/contact">Contact Support</a></li>
             </ul>
           </div>
 
@@ -31,7 +31,7 @@ const Footer = () => {
             <div className="newsletter-section">
               <h3 className="footer-heading">NEWSLETTER</h3>
               <p className="newsletter-description">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.
+                Subscribe to our newsletter to receive exclusive deals, new vehicle announcements, and special offers.
               </p>
               <div className="newsletter-input-group">
                 <input 
@@ -83,7 +83,7 @@ const Footer = () => {
           </div>
           </div>
           <p className="footer-description">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero tempor invidunt ut labore et dolore.
+            Kingo Rides is your trusted partner for premium car rentals and flexible vehicle subscriptions. We offer a wide selection of well-maintained vehicles, comprehensive insurance coverage, and exceptional customer service. Experience the freedom of the road with our convenient rental packages tailored to your needs.
           </p>
         
       </div>

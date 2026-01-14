@@ -11,31 +11,31 @@ const Benefits = () => {
     { 
       id: 1, 
       title: 'SUMMER/WINTER WH...', 
-      description: 'Lorem ipsum dolor sit amet consectetur, Felis velit volutpat nisl adipiscing sed',
+      description: 'Our vehicles are equipped with appropriate tires for seasonal conditions, ensuring safe driving year-round.',
       icon: summerIcon
     },
     { 
       id: 2, 
       title: 'HOME DELIVERY', 
-      description: 'Lorem ipsum dolor sit amet consectetur, Felis velit volutpat nisl adipiscing sed',
+      description: 'Get your rental car delivered directly to your doorstep for maximum convenience and time savings.',
       icon: homeIcon
     },
     { 
       id: 3, 
       title: 'NO EXTRA COSTS', 
-      description: 'Lorem ipsum dolor sit amet consectetur, Felis velit volutpat nisl adipiscing sed',
+      description: 'Transparent pricing with no hidden fees. All essential services and insurance are included in your rental.',
       icon: noExtraIcon
     },
     { 
       id: 4, 
       title: 'NEW TIRES WHEN WO...', 
-      description: 'Lorem ipsum dolor sit amet consectetur, Felis velit volutpat nisi adipiscing sed',
+      description: 'All vehicles feature quality tires with proper tread depth, regularly inspected and replaced when needed.',
       icon: newTiresIcon
     },
     { 
       id: 5, 
       title: 'INSURANCE INCLUDED', 
-      description: 'Lorem ipsum dolor sit amet consectetur, Felis velit volutpat nisl adipiscing sed',
+      description: 'Comprehensive insurance coverage is included with every rental, protecting you and the vehicle.',
       icon: insuranceIcon
     },
   ];
@@ -45,7 +45,7 @@ const Benefits = () => {
       <div className="benefits-container">
         <h2 className="section-title">BENEFITS</h2>
         <p className="section-description">
-          Lorem ipsum dolor sit amet consectetur. Sit sed viverra ut habitasse quis sed.
+          Discover the advantages of renting with Kingo Rides. From seasonal tire preparation to home delivery, we provide exceptional service and value.
         </p>
         
         <div className="benefits-grid">
